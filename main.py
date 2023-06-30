@@ -13,7 +13,7 @@ if __name__ == "__main__":
     alpha = 1
     beta = 1
     num_ants = len(graph.edges)
-    best_clique_size_local = 0
+
     best_click_of_all = []
     best_click_local = []
     best_ant_local = Ant(graph, alpha, beta)
@@ -22,24 +22,27 @@ if __name__ == "__main__":
 
     ants = [Ant(graph, alpha, beta) for _ in range(num_ants)]
     for i in range(10):
-        
+        print("Interation: ", str(i))
+        best_clique_size_local = 0
+
         for ant in ants:
             for _ in range(graph.num_vertices):
                 ant.select_next_vertex()
 
                 if ant.is_complete_subgraph():
-                    print("Found a solution: ", str(len(ant.visited_vertices)))
                     if len(ant.visited_vertices) > len(best_click_of_all):
+                        print("Found a global solution: ", str(len(ant.visited_vertices)))
                         best_clique_size = len(ant.visited_vertices)
-                        best_click_of_all = ant.visited_vertices
-                        best_click_local = ant.visited_vertices
+                        best_click_of_all = ant.visited_vertices.copy()
+                        best_click_local = ant.visited_vertices.copy()
                         #save pheromone delta
                         ant.update_pheromone_delta()
                         best_ant_off_all = ant
                         best_ant_local = ant
                     elif len(ant.visited_vertices) > best_clique_size_local:
+                        print("Found a local solution: ", str(len(ant.visited_vertices)))
                         best_clique_size_local = len(ant.visited_vertices)
-                        best_click_local = ant.visited_vertices
+                        best_click_local = ant.visited_vertices.copy()
                         #save pheromone delta
                         ant.update_pheromone_delta()
                         best_ant_local = ant

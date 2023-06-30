@@ -1,28 +1,46 @@
+import random
+
 class Ant:
-    def __init__(self, start_node):
-        # The nodes visited by this ant will be stored in self.clique
-        self.clique = [start_node]
-        self.current_node = start_node
+    def __init__(self, graph, alpha, beta):
+        self.graph = graph
+        self.alpha = alpha  # Pheromone importance
+        self.beta = beta  # Desirability importance
+        self.current_node = random.randrange(graph.num_vertices)  # Start at a random vertex
+        self.visited_vertices = [self.current_node]  # List of visited vertices
+        self.pheromone_delta = [[0 for _ in range(graph.num_vertices)] for _ in range(graph.num_vertices)]  # Changes of pheromones
 
-    def add_node(self, node):
-        #Add a node to the ant's clique
-        self.clique.append(node)
-        self.current_node = node
+    def calculate_probability(self, v):
+        # Calculate the probability of moving to vertex v
+        pheromone = self.graph.get_pheromone(self.current_node, v) ** self.alpha
+        desirability = self.graph.get_desirability(self.current_node, v) ** self.beta
+        return pheromone * desirability
 
-    def get_current_node(self):
-        #Get the current node of the ant
-        return self.current_node
+    def select_next_vertex(self):
+        # Select the next vertex to visit
+        probabilities = [self.calculate_probability(v) if v not in self.visited_vertices else 0 for v in range(self.graph.num_vertices)]
+        total = sum(probabilities)
+        if total == 0:
+            #print("All vertices have been visited.")
+            next_vertex = None
+        else:
+            probabilities = [p / total for p in probabilities]  # Normalize to make it a probability distribution
+            next_vertex = random.choices(range(self.graph.num_vertices), probabilities)[0]  # Select a vertex based on the probabilities
+        self.visited_vertices.append(next_vertex)
+        self.current_node = next_vertex
 
-    def get_clique(self):
-        #Get the nodes visited by the ant
-        return self.clique
+    def is_complete_subgraph(self):
+        # Check if the visited vertices form a complete subgraph (clique)
+        for u in self.visited_vertices:
+            for v in self.visited_vertices:
+                if u != v and v not in self.graph.get_neighbors(u):
+                    return False
+        return True
 
-    def get_clique_size(self):
-        #Get the size of the ant's clique
-        return len(self.clique)
-
-    def clear_clique(self):
-        #Clear the ant's clique
-        start_node = self.clique[0]
-        self.clique = [start_node]
-        self.current_node = start_node
+    def update_pheromone_delta(self):
+        # Update the changes of pheromones
+        if self.is_complete_subgraph():
+            for i in range(len(self.visited_vertices) - 1):
+                u = self.visited_vertices[i]
+                v = self.visited_vertices[i + 1]
+                self.pheromone_delta[u][v] = 1 / len(self.visited_vertices)  # Increase the pheromone level
+                self.pheromone_delta[v][u] = self.pheromone_delta[u][v]  # Assuming the graph is undirected

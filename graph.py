@@ -1,4 +1,6 @@
 class Graph:
+    MAX_PHEROMONE = 10 
+    MIN_PHEROMONE = 1  
     def __init__(self, num_vertices, edges=None, pheromones=None):
         self.num_vertices = num_vertices
         self.edges = edges if edges else [[] for _ in range(num_vertices)]  # Adjacency lists
@@ -27,16 +29,20 @@ class Graph:
         return self.get_pheromone(u, v) * self.get_degree(v)
 
     def set_pheromone(self, u, v, value):
-        #Set the pheromone level of the edge between u and v
+        #Set the pheromone level of the edge between u and v respecting max and min value
+        value = max(self.MIN_PHEROMONE, min(self.MAX_PHEROMONE, value)) 
         self.pheromones[u][v] = value
-        self.pheromones[v][u] = value  # Assuming the graph is undirected
+        self.pheromones[v][u] = value
 
-    def evaporate_pheromones(self, evaporation_rate):
-        #Evaporate some of the pheromones on all edges
+    def evaporate_pheromones(self, evaporation_rate, solution_edges):
+        #Evaporate some of the pheromones on all edges except the ones in the solution
         for u in range(self.num_vertices):
             for v in range(self.num_vertices):
-                self.pheromones[u][v] *= (1 - evaporation_rate)
-                self.pheromones[v][u] = self.pheromones[u][v]  # Assuming the graph is undirected
+                # Check if the edge (u, v) or (v, u) is not in the solution
+                if (u, v) not in solution_edges and (v, u) not in solution_edges:
+                    self.pheromones[u][v] *= (1 - evaporation_rate)
+                    self.pheromones[u][v] = max(self.MIN_PHEROMONE, self.pheromones[u][v])  # Don't let it go below the min
+                    self.pheromones[v][u] = self.pheromones[u][v]  # Assuming the graph is undirected
 
     @classmethod
     def build_graph(cls, graph_dict):

@@ -20,13 +20,12 @@ class Ant:
         probabilities = [self.calculate_probability(v) if v not in self.visited_vertices else 0 for v in range(self.graph.num_vertices)]
         total = sum(probabilities)
         if total == 0:
-            #print("All vertices have been visited.")
-            next_vertex = None
+            return  # If total is zero, we don't add a new vertex and return from the function
         else:
             probabilities = [p / total for p in probabilities]  # Normalize to make it a probability distribution
             next_vertex = random.choices(range(self.graph.num_vertices), probabilities)[0]  # Select a vertex based on the probabilities
-        self.visited_vertices.append(next_vertex)
-        self.current_node = next_vertex
+            self.visited_vertices.append(next_vertex)
+            self.current_node = next_vertex
 
     def is_complete_subgraph(self):
         # Check if the visited vertices form a complete subgraph (clique)

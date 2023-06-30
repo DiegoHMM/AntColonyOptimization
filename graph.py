@@ -26,7 +26,7 @@ class Graph:
 
     def get_desirability(self, u, v):
         #Get the desirability of moving from vertex u to vertex v
-        return self.get_pheromone(u, v) * self.get_degree(v)
+        return self.get_degree(v)
 
     def set_pheromone(self, u, v, value):
         #Set the pheromone level of the edge between u and v respecting max and min value

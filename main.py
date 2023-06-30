@@ -4,10 +4,12 @@ from ant import Ant
 
 
 if __name__ == "__main__":
-    graph_dict = read_graph('graph_1.txt')
-    graph = Graph.build_graph(graph_dict)
-    print(graph.num_vertices)
-    print(len(graph.edges))
+    graph_dict = read_graph('graph_2.txt')
+    print(graph_dict)
+    graph = Graph.from_dict(graph_dict)
+    
+    print("Total vértices: ", str(graph.num_vertices))
+    print("Total arestas: ", str(graph.total_edges))
 
     MAX_ITERACTIONS = 50
     alpha = 1

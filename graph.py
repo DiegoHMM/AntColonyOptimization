@@ -1,15 +1,16 @@
 class Graph:
     MAX_PHEROMONE = 10 
     MIN_PHEROMONE = 1  
-    def __init__(self, num_vertices, edges=None, pheromones=None):
+    def __init__(self, num_vertices, edges, pheromones, total_edges=None):
         self.num_vertices = num_vertices
         self.edges = edges if edges else [[] for _ in range(num_vertices)]  # Adjacency lists
         self.pheromones = pheromones if pheromones else [[1 for _ in range(num_vertices)] for _ in range(num_vertices)]  # Initial pheromones
-
+        self.total_edges = total_edges if total_edges else 0  # Initialize total_edges
     def add_edge(self, u, v):
         #Add an edge between vertices u and v
         self.edges[u].append(v)
         self.edges[v].append(u)  # Assuming the graph is undirected
+        self.total_edges += 1  # Update total_edges
 
     def get_neighbors(self, v):
         #Get the neighbors of a vertex v
@@ -43,12 +44,21 @@ class Graph:
                     self.pheromones[u][v] *= (1 - evaporation_rate)
                     self.pheromones[u][v] = max(self.MIN_PHEROMONE, self.pheromones[u][v])  # Don't let it go below the min
                     self.pheromones[v][u] = self.pheromones[u][v]  # Assuming the graph is undirected
-
+    
     @classmethod
-    def build_graph(cls, graph_dict):
+    def from_dict(cls, graph_dict):
         num_vertices = len(graph_dict)
         edges = [[] for _ in range(num_vertices)]
-        pheromones = [[1 for _ in range(num_vertices)] for _ in range(num_vertices)]  # Initialize pheromones
+        pheromones = [[1 for _ in range(num_vertices)] for _ in range(num_vertices)]  # Initial pheromones
+        total_edges = 0
+
         for vertex, neighbors in graph_dict.items():
-            edges[vertex-1] = [n-1 for n in neighbors]  # Adjusting for 0-based indexing
-        return cls(num_vertices, edges, pheromones)
+            # subtracting 1 because vertices in the dict are 1-indexed, but our list is 0-indexed
+            for neighbor in neighbors:
+                edges[vertex-1].append(neighbor-1)
+                edges[neighbor-1].append(vertex-1)  # Assuming the graph is undirected
+                total_edges += 1
+
+        total_edges //= 2  # since each edge was counted twice
+
+        return cls(num_vertices, edges, pheromones, total_edges)

@@ -1,3 +1,16 @@
+import json
+import os
+
+def save_hyperparameters(data_file, alpha, beta, num_ants, evaporation, max_it, elitism, click_size, seed):
+    hyperparams = {'data_file': data_file, 'alpha': alpha, 'beta': beta,
+                   'num_ants': num_ants, 'evaporation': evaporation, 'max_it': max_it,
+                   'elitism': elitism, 'click_size': click_size}
+
+    if not os.path.exists('Stats/'+data_file):
+        os.makedirs('Stats/'+data_file)
+    with open('Stats/'+data_file+'/stats_'+data_file + "_" + str(seed) + '.json', 'w') as f:
+        json.dump(hyperparams, f)
+
 def read_graph(filename):
     graph = {}
     with open(filename, 'r') as file:
@@ -19,14 +32,3 @@ def read_graph(filename):
                 graph[int(tokens[2])].append(int(tokens[1]))
 
     return graph
-
-def is_complete(graph):
-    vertices = list(graph.keys())
-    n = len(vertices)
-    for vertex in vertices:
-        if len(graph[vertex]) != n - 1:
-            return False
-    return True
-
-def count_vertices(graph):
-    return len(graph.keys())

@@ -42,5 +42,5 @@ class Ant:
         for i in range(len(self.visited_vertices) - 1):
             u = self.visited_vertices[i]
             v = self.visited_vertices[i + 1]
-            self.pheromone_delta[u][v] = 1 / len(self.visited_vertices)  # Increase the pheromone level
-            self.pheromone_delta[v][u] = self.pheromone_delta[u][v]  # Assuming the graph is undirected
+            self.pheromone_delta[u][v] = 1 / len(self.visited_vertices)  # Increase the pheromone level edge (u,v)
+            self.pheromone_delta[v][u] = self.pheromone_delta[u][v] # edge (v,u)

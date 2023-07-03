@@ -4,31 +4,46 @@ from ant import Ant
 
 
 if __name__ == "__main__":
-    graph_dict = read_graph('graph_2.txt')
-    print(graph_dict)
-    graph = Graph.from_dict(graph_dict)
+
+    data_file = 'g_700.txt'
+
+    if data_file == 'g_125.txt':
+        graph_dict = read_graph('Dataset/'+data_file)
+        graph = Graph.from_dict(graph_dict)
+        click_size = 4
+    elif data_file == 'g_500.txt':
+        graph_dict = read_graph('Dataset/'+data_file)
+        graph = Graph.from_dict(graph_dict)
+        click_size = 13
+    elif data_file == 'g_700.txt':
+        graph_dict = read_graph('Dataset/'+data_file)
+        graph = Graph.from_dict(graph_dict)
+        click_size = 44
+
+
     
     print("Total vértices: ", str(graph.num_vertices))
     print("Total arestas: ", str(graph.total_edges))
 
-    MAX_ITERACTIONS = 50
+    MAX_ITERACTIONS = graph.num_vertices
     alpha = 1
     beta = 1
-    num_ants = len(graph.edges)
+    num_ants = 50#graph.num_vertices
 
     best_click_of_all = []
     best_click_local = []
     best_ant_local = Ant(graph, alpha, beta)
     best_ant_off_all = Ant(graph, alpha, beta)
-    taxa_evaporacao = 0.3
+    taxa_evaporacao = 0.001
 
-    ants = [Ant(graph, alpha, beta) for _ in range(num_ants)]
-    for i in range(10):
+
+    for i in range(500):
+        ants = [Ant(graph, alpha, beta) for _ in range(num_ants)]
         print("Interation: ", str(i))
         best_clique_size_local = 0
 
         for ant in ants:
-            for _ in range(graph.num_vertices):
+            for j in range(click_size): #Cada formiga vai andar click_size vezes
                 ant.select_next_vertex()
 
                 if ant.is_complete_subgraph():
@@ -42,7 +57,7 @@ if __name__ == "__main__":
                         best_ant_off_all = ant
                         best_ant_local = ant
                     elif len(ant.visited_vertices) > best_clique_size_local:
-                        print("Found a local solution: ", str(len(ant.visited_vertices)))
+                        #print("Found a local solution: ", str(len(ant.visited_vertices)))
                         best_clique_size_local = len(ant.visited_vertices)
                         best_click_local = ant.visited_vertices.copy()
                         #save pheromone delta
@@ -54,20 +69,30 @@ if __name__ == "__main__":
             ant.update_pheromone_delta()
 
         #update pheromone without best way
-
+        #Local best
+        '''
         solution_edges = []
-        for i in range(len(best_click_local) -1):
-            u = best_click_local[i]
-            v = best_click_local[i+1]
+        for i in range(len(best_ant_local.visited_vertices) -1):
+            u = best_ant_local.visited_vertices[i]
+            v = best_ant_local.visited_vertices[i+1]
             edge = (u, v)
             solution_edges.append(edge)
             # Update pheromone levels with delta
             graph.set_pheromone(u, v, graph.get_pheromone(u, v) + best_ant_local.pheromone_delta[u][v])
 
+        '''
+
+        #Global best
+        solution_edges = []
+        for i in range(len(best_ant_off_all.visited_vertices) -1):
+            u = best_ant_off_all.visited_vertices[i]
+            v = best_ant_off_all.visited_vertices[i+1]
+            edge = (u, v)
+            solution_edges.append(edge)
+            # Update pheromone levels with delta
+            graph.set_pheromone(u, v, graph.get_pheromone(u, v) + best_ant_off_all.pheromone_delta[u][v])
+
         graph.evaporate_pheromones(taxa_evaporacao, solution_edges)
-
-
-    
     print("Best clique size: ", len(best_click_of_all))
     print("Best clique: ", best_click_of_all)
 

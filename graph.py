@@ -1,6 +1,6 @@
 class Graph:
-    MAX_PHEROMONE = 10 
-    MIN_PHEROMONE = 1  
+    MAX_PHEROMONE = 1 
+    MIN_PHEROMONE = 0.2 
     def __init__(self, num_vertices, edges, pheromones, total_edges=None):
         self.num_vertices = num_vertices
         self.edges = edges if edges else [[] for _ in range(num_vertices)]  # Adjacency lists

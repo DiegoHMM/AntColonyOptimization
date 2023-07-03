@@ -1,11 +1,11 @@
 class Graph:
-    MAX_PHEROMONE = 1 
-    MIN_PHEROMONE = 0.2 
-    def __init__(self, num_vertices, edges, pheromones, total_edges=None):
+    def __init__(self, num_vertices, edges, pheromones, total_edges=None, max_pheromone=100, min_pheromone=1):
         self.num_vertices = num_vertices
         self.edges = edges if edges else [[] for _ in range(num_vertices)]  # Adjacency lists
         self.pheromones = pheromones if pheromones else [[1 for _ in range(num_vertices)] for _ in range(num_vertices)]  # Initial pheromones
         self.total_edges = total_edges if total_edges else 0  # Initialize total_edges
+        self.max_pheromone = max_pheromone
+        self.min_pheromone = min_pheromone
     def add_edge(self, u, v):
         #Add an edge between vertices u and v
         self.edges[u].append(v)
@@ -31,7 +31,7 @@ class Graph:
 
     def set_pheromone(self, u, v, value):
         #Set the pheromone level of the edge between u and v respecting max and min value
-        value = max(self.MIN_PHEROMONE, min(self.MAX_PHEROMONE, value)) 
+        value = max(self.min_pheromone, min(self.max_pheromone, value))
         self.pheromones[u][v] = value
         self.pheromones[v][u] = value
 
@@ -42,11 +42,11 @@ class Graph:
                 # Check if the edge (u, v) or (v, u) is not in the solution
                 if (u, v) not in solution_edges and (v, u) not in solution_edges:
                     self.pheromones[u][v] *= (1 - evaporation_rate)
-                    self.pheromones[u][v] = max(self.MIN_PHEROMONE, self.pheromones[u][v])  # Don't let it go below the min
+                    self.pheromones[u][v] = max(self.min_pheromone, self.pheromones[u][v])  # Don't let it go below the min
                     self.pheromones[v][u] = self.pheromones[u][v]  # Assuming the graph is undirected
     
     @classmethod
-    def from_dict(cls, graph_dict):
+    def from_dict(cls, graph_dict, max_pheromone=100, min_pheromone=1):
         num_vertices = len(graph_dict)
         edges = [[] for _ in range(num_vertices)]
         pheromones = [[1 for _ in range(num_vertices)] for _ in range(num_vertices)]  # Initial pheromones
@@ -61,4 +61,4 @@ class Graph:
 
         total_edges //= 2  # since each edge was counted twice
 
-        return cls(num_vertices, edges, pheromones, total_edges)
+        return cls(num_vertices, edges, pheromones, total_edges, max_pheromone, min_pheromone)

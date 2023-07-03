@@ -4,10 +4,10 @@ from graph import Graph
 from utils import *
 from ant import Ant
 
-def ant_colony_optimization(data_file, click_size, alpha, beta, num_ants, evaporation, max_it, elitism, seed):
+def ant_colony_optimization(data_file, click_size, alpha, beta, num_ants, evaporation, max_it, elitism, seed, max_pheromone, min_pheromone):
     #Read graph
     graph_dict = read_graph('Dataset/'+data_file+'.txt')
-    graph = Graph.from_dict(graph_dict)
+    graph = Graph.from_dict(graph_dict, max_pheromone, min_pheromone)
 
     print("Total vértices: ", str(graph.num_vertices))
     print("Total arestas: ", str(graph.total_edges))
@@ -77,8 +77,5 @@ def ant_colony_optimization(data_file, click_size, alpha, beta, num_ants, evapor
         i += 1
     print("Best clique size: ", len(best_click_of_all))
     print("Best clique: ", best_click_of_all)
-    #Save stats as csv
-    save_hyperparameters(data_file, alpha, beta, num_ants, evaporation, max_it, elitism, click_size, seed)
-    stats_df.to_csv('Stats/' + data_file + '/stats_' + data_file + '_' + str(seed) + '.csv', index=False)
 
-    return best_click_of_all
+    return stats_df

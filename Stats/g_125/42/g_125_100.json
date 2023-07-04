@@ -1,0 +1,1 @@
+{"data_file": "g_125", "alpha": 1, "beta": 1, "num_ants": 100, "evaporation": 0.5, "max_it": 100, "elitism": true, "click_size": 3, "seed": 42, "max_pheromone": 100, "min_pheromone": 1}

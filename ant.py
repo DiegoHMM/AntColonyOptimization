@@ -12,8 +12,8 @@ class Ant:
     def calculate_probability(self, v):
         # Calculate the probability of moving to vertex v
         pheromone = self.graph.get_pheromone(self.current_node, v) ** self.alpha
-        desirability = self.graph.get_desirability(self.current_node, v) ** self.beta
-        return pheromone * desirability
+        #desirability = self.graph.get_desirability(self.current_node, v) ** self.beta
+        return pheromone# * desirability
 
     def select_next_vertex(self):
         # Select the next vertex to visit

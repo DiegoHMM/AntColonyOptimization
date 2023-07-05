@@ -38,3 +38,4 @@ if __name__ == "__main__":
     experiments = [('g_125', 3), ('g_500', 13), ('g_700', 44)]
     with Pool(10) as p:
         print(p.map(mainProcess, [57, 12, 89, 42, 76, 28, 63, 95, 51, 10]))
+

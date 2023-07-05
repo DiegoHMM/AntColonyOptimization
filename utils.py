@@ -7,7 +7,7 @@ def save_hyperparameters(path, data_file, alpha, beta, num_ants, evaporation, ma
                    'elitism': elitism, 'click_size': click_size, 'seed': seed, 'max_pheromone': max_pheromone, 'min_pheromone': min_pheromone}
 
     create_stats_folder(path)
-    with open(path+'/'+data_file+'.json', 'w') as f:
+    with open(path+'/'+data_file+ '_'+str(num_ants)+'.json', 'w') as f:
         json.dump(hyperparams, f)
 
 

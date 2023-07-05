@@ -9,7 +9,7 @@ if __name__ == "__main__":
     alpha = 1
     beta = 1
     num_ants = 50  # graph.num_vertices
-    evaporation = 0.5
+    evaporation = 5
     max_it = 100
     max_pheromone = 100
     min_pheromone = 1
@@ -26,7 +26,8 @@ if __name__ == "__main__":
             print(f"Grafo: {data_file}")
 
             folder = f'Stats/{data_file}/{seed}'
-            print(folder)
+
+            print("*****************")
             create_stats_folder(folder)
 
             # Run ACO

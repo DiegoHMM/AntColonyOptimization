@@ -7,14 +7,14 @@ def mainProcess(seed):
     alpha = 1
     beta = 1
     #num_ants = 50  # graph.num_vertices default
-    num_ants = 100
+    num_ants = 25000
     evaporation = 0.5
-    max_it = 200
+    max_it = 10
     max_pheromone = 100
     min_pheromone = 1
     elitism = True
-    data_file = 'g_500'
-    click_size = 13
+    data_file = 'g_700'
+    click_size = 44
     print(f"Seed: {seed}")
     print(f"Grafo: {data_file}")
     random.seed(seed)

@@ -7,9 +7,9 @@ def mainProcess(seed):
     alpha = 1
     beta = 1
     #num_ants = 50  # graph.num_vertices default
-    num_ants = 25000
+    num_ants = 50
     evaporation = 0.5
-    max_it = 10
+    max_it = 200
     max_pheromone = 100
     min_pheromone = 1
     elitism = True
